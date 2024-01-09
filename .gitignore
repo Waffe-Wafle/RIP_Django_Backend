@@ -2,6 +2,13 @@
 **/.idea
 **/config.cfg
 
+media/soft_files/*
+!media/soft_files/.gitkeep
+
+media/soft_images/*
+!media/soft_images/.gitkeep
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

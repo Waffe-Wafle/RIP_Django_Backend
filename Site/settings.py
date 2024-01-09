@@ -2,6 +2,9 @@ from pathlib import Path
 from configparser import ConfigParser
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_ROOT = BASE_DIR / 'media'
+SOFT_LOADERS_ROOT = MEDIA_ROOT / 'soft_files'
+PHOTOS_ROOT = MEDIA_ROOT / 'soft_images'
 
 CONFIG = ConfigParser()
 CONFIG.read(BASE_DIR / 'config.cfg')
@@ -10,10 +13,10 @@ SECRET_KEY = CONFIG.get('Django', 'secret_key')
 DEBUG = True
 
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 ROOT_URLCONF = 'Site.urls'
 WSGI_APPLICATION = 'Site.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,6 +27,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'SoftLoading',
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     CONFIG.get('Postgres DB', 'name'),
+        'USER':     CONFIG.get('Postgres DB', 'user'),
+        'PASSWORD': CONFIG.get('Postgres DB', 'password'),
+        'HOST':     CONFIG.get('Postgres DB', 'host'),
+        'PORT':     CONFIG.get('Postgres DB', 'port')
+    }
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Should be first!

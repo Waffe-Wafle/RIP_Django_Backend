@@ -18,6 +18,11 @@
                 <b>{{ soft.price }}</b>
             </div>
         </div>
+         <form method="post" class="d-flex justify-content-center w-100 ">
+             {% csrf_token %}
+             <input name="delete" style="display: none;" value="{{ soft.id }}">
+             <button type="submit" class="btn  btn-primary danger">delete</button>
+         </form>
     </div>
 </a>
 {% endblock %}
