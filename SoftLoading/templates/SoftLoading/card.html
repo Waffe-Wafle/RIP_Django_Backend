@@ -1,0 +1,23 @@
+{% load static %}
+{% block content %}
+
+
+<a href="{% url 'soft_loading:soft' soft.id %}">
+    <div class="card">
+        <div className="text-center">
+            <img class="skrug w-100" src="{{ soft.image }}"
+                 onerror="this.src='{% static 'SoftLoading/src/placeholder.jpg' %}'">
+        </div>
+        <div class="d-flex justify-between align-center">
+            <div class="d-flex flex-column">
+                <span>Название:</span>
+                <b>{{ soft.name }}</b>
+                <span>Описание:</span>
+                <b>{{ soft.description }}</b>
+                <span>Цена:</span>
+                <b>{{ soft.price }}</b>
+            </div>
+        </div>
+    </div>
+</a>
+{% endblock %}

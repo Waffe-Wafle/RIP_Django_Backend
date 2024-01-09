@@ -1,0 +1,51 @@
+{% extends 'SoftLoading/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="BC">
+    <p class="br_c"><a class="BC_link" href="/">Главная</a>
+        / <a class="BC_link">{{soft.name}}</a></p>
+</div>
+<ul class="content p-15 flex-row">
+    <h2 class="mb-0 d-flex flex-column flex-sm-row justify-between sm text-center">
+        {{ soft.name }}
+    </h2>
+    <div class="text-center">
+        <img class="wrapper align-center mt-15 mb-10 w-75" src="{{ soft.image }}"
+             style="margin-bottom: 15px; margin-top: 25px;"
+             onerror="this.src='{% static 'SoftLoading/src/placeholder.jpg' %}'"/>
+        <h3 style=" margin-top: 0px; ">Цена: {{soft.price}} ₽</h3>
+    </div>
+    <h3>Описание:</h3>
+    <li class="mb-25 ml-25" style="margin-left: 25px; margin-top: 25 px; margin-bottom: 25px;">{{ soft.description }}
+    </li>
+    <h3 class="mb-0">Файлы:</h3>
+    <div class="w-100 text-center">
+        <div class="w-100 text-center">
+            <div class="mt-15 d-inline-block">
+                {% if not soft.files or not soft.files|length %}
+                <h2>...</h2>
+                {% else %}
+                {% for file in soft.files %}
+                <div class="file-card">
+                    <div class="file-details d-flex align-center mr-5">
+                        <b>{{ file.size }}</b>
+                        <b>{{ file.platform }}</b>
+                        <b>{{ file.architecture }}</b>
+                    </div>
+                    <div class="buttons flex-column flex-sm-row ml-10">
+                        <a class="btn btn-primary download-button" href="{{file.file}}">
+                            Скачать
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</ul>
+</div>
+{% endblock %}

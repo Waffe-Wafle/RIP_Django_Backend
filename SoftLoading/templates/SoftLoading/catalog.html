@@ -1,0 +1,42 @@
+{% extends 'SoftLoading/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="BC">
+    <p class="br_c"><a class="BC_link" href="/">Главная</a>
+        / <a class="BC_link" href="{% url 'SoftLoading:catalog'%}">Каталог</a></p>
+</div>
+<div class="content p-40">
+    <div class="header d-flex align-center justify-between">
+        <h2 className="mb-0 w-100">Все программы</h2>
+        <div class="d-flex align-items-center justify-content-end content w-100">
+            <form id="searchForm" method="post" class="d-none d-sm-flex inputField">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="search" class="sr-only"><span>Поиск:</span></label>
+                    <input id="search" class="form-control border-dark mr-2" name="search" type="text"
+                           value="{{search_text}}"
+                           style="border-width: 2px; border-radius: 5px;">
+                    <button class="btn btn-primary" type="submit">Поиск</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-flex">
+    {% if not soft_list %}
+    <h1>Каталог пуст..</h1>
+    {% else %}
+    <div class="row g-4">
+        {% for soft in soft_list %}
+        <div class="col-md-4 col-lg-3" id="{{ forloop.counter }}">
+            {% include 'SoftLoading/card.html' with soft=soft %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+</div>
+{% endblock %}
