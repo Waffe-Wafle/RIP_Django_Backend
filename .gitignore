@@ -2,6 +2,15 @@
 **/.idea
 **/config.cfg
 
+media/soft_files/*
+!media/soft_files/.gitkeep
+
+media/soft_images/*
+!media/soft_images/.gitkeep
+
+**/migrations/*
+!**/migrations/__init__.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
