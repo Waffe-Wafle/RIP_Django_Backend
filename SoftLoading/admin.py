@@ -1,9 +1,5 @@
 from django.contrib.admin import site, TabularInline, ModelAdmin
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
 from SoftLoading.models import Soft, File, Payment
-
-# site.register([Soft, File, Payment])
 
 
 class FilesTabular(TabularInline):
@@ -34,6 +30,14 @@ class PaymentsView(ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        obj.manager = request.user
+        obj.save()
 
 
 site.register(Soft, SoftView)
