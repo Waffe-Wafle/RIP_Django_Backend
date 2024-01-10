@@ -20,22 +20,29 @@ con.set_isolation_level(0)
 cur = con.cursor()
 cur.execute('SELECT * FROM "Payments"')
 results = cur.fetchall()
-print(results)
+print('Payments:')
+[print(paiment) for paiment in results]
+print()
+
+cur.execute('SELECT * FROM "Soft"')
+results = cur.fetchall()
+print('Soft:')
+[print(soft) for soft in results]
 
 
 def short_field(value):
     return value[:34] + ('...' if len(value) > 34 else '')
 
 
-def get_soft_data(soft, files=False):
+def get_soft_data(soft, extended=False, files=None):
     data = {
         'id': soft.id,
-        'name': short_field(soft.name),
+        'name': soft.name if extended else short_field(soft.name) ,
         'image': soft.image.url if soft.image else None,
         'price': soft.price,
-        'description': short_field(soft.description)
+        'description': soft.description  if extended else short_field(soft.description)
     }
-    if files:
+    if extended:
         data.update({'files': files})
 
     return data
@@ -76,12 +83,12 @@ def catalog(request: HttpRequest):
     soft_list = [get_soft_data(soft) for soft in softs]
 
     return render(request, 'SoftLoading/catalog.html', {'soft_list': soft_list,
-                                                        'search_text': search,
+                                                        'search_text': search if search else '',
                                                         'filter': filter})
 
 
 def soft(request, soft_id):
     soft = get_soft_data(
-        Soft.objects.get(id=soft_id), files=File.objects.filter(soft_id=soft_id)
+        Soft.objects.get(id=soft_id), extended=True, files=File.objects.filter(soft_id=soft_id),
     )
     return render(request, 'SoftLoading/soft.html', {'soft': soft})

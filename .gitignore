@@ -8,6 +8,8 @@ media/soft_files/*
 media/soft_images/*
 !media/soft_images/.gitkeep
 
+**/migrations/*
+!**/migrations/__init__.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

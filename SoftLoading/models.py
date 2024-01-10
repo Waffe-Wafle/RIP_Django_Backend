@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+
 from .validators import *
 from django.contrib.auth.models import User
 
@@ -17,7 +18,8 @@ class Soft(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to=PHOTOS_ROOT)
     description = models.TextField(blank=True, null=True)
     price = models.FloatField(validators=[MinValueValidator(0)])
-    status = models.CharField(default=SOFT_STATUSES[0],
+    status = models.CharField(max_length=9,
+                              default=SOFT_STATUSES[0],
                               validators=[soft_status_validate],
                               choices=[(var, var) for var in SOFT_STATUSES])
 
@@ -64,7 +66,7 @@ class File(models.Model):
 
 @receiver(post_save, sender=File)
 def save_size(sender, instance, *args, **kwargs):          # Used signal instead of save
-    size = sizeof_fmt(getsize(instance.file.path))         # because of path of unsaved file bug.
+    size = sizeof_fmt(instance.file.size)                  # because of path of unsaved file bug.
     instance.size = size                                   # To be correctly returned in current request
     File.objects.filter(id=instance.id).update(size=size)  # To save properly in model without recursion
 
@@ -73,14 +75,15 @@ class Payment(models.Model):
     soft = models.ManyToManyField(Soft)
     user = models.ForeignKey(User, models.CASCADE)
     manager = models.ForeignKey(User, models.SET_NULL,
-                                related_name='payment_from_manager_set', blank=True, null=True,)
+                                related_name='payment_from_manager_set', blank=True, null=True,
+                                editable=False)
     code = models.CharField(max_length=10, blank=True, null=False, editable=False)
     status = models.CharField(
-        max_length=30,
+        max_length=9,
         blank=True,
         default=PAYMENT_STATUSES[0],
         validators=[payment_status_validate],
-        choices=[(var, var) for var in PAYMENT_STATUSES]
+        choices=[(var, var) for var in PAYMENT_STATUSES[2:-1]]
     )
     date_open = models.DateField(auto_now=True)
     date_pay = models.DateField(blank=True, null=True)
@@ -90,8 +93,9 @@ class Payment(models.Model):
         managed = True
         db_table = 'Payments'
 
-    # def __str__(self):
-    #     return f'{self.user.username}: "{self.soft.name}", {self.soft.price} ({self.status}): '
+    def __str__(self):
+        return f'{self.user.username} ({self.status}) {self.date_open}: ' \
+               f'{self.soft.aggregate(models.Sum("price"))["price__sum"]} ₽'
 
 
 @receiver(post_save, sender=Payment)
